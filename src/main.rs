@@ -9,11 +9,11 @@ mod pin;
 use core::panic::PanicInfo;
 use core::ptr;
 use led::Led;
-use pin::{Pin, PinToken};
+use pin::{Pin, PinName};
 
 #[inline(never)]
 fn main() -> ! {
-    let pin = PinToken::new(Pin::P2_2);
+    let pin = Pin::new(PinName::P2_2);
     match pin {
         Some(p) => {
             let led = Led::new(p);
@@ -86,7 +86,7 @@ fn panic(_info: &PanicInfo<'_>) -> ! {
 }
 
 pub unsafe extern "C" fn default_handler() -> ! {
-    let pin = PinToken::new(Pin::P2_0);
+    let pin = Pin::new(PinName::P2_0);
     match pin {
         Some(p) => {
             let led = Led::new(p);
@@ -109,4 +109,4 @@ pub static EXCEPTION_VECTORS: [unsafe extern "C" fn() -> !; 14] = [default_handl
 
 #[link_section = ".vector_table.interrupts"]
 #[no_mangle]
-pub static INTERRUPT_VECTORS: [unsafe extern "C" fn() -> !; 240] = [default_handler; 240];
+pub static INTERRUPT_VECTORS: [unsafe extern "C" fn() -> !; 0] = [default_handler; 0];

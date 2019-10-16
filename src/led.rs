@@ -1,5 +1,5 @@
 
-use crate::pin::{Pin, PinToken};
+use crate::pin::{Pin, PinName};
 use core::mem::size_of;
 
 const P2OUT_BITBAND: usize = 0x4209_8060;
@@ -17,13 +17,13 @@ const BITBAND_BLUE_LED_DIR: usize = BITBAND_GREEN_LED_DIR + size_of::<u32>();
 pub struct Led {
     out_addr: &'static mut u8,
     dir_addr: &'static mut u8,
-    _pin: PinToken
+    _pin: Pin
 }
 
 impl Led {
-    pub fn new(pin: PinToken) -> Option<Self> {
+    pub fn new(pin: Pin) -> Option<Self> {
         let mut led = match pin.get_pin() {
-            Pin::P2_0 => unsafe {
+            PinName::P2_0 => unsafe {
                 Some (
                     Led {
                         out_addr: &mut *(BITBAND_RED_LED_VALUE as *mut u8),
@@ -33,7 +33,7 @@ impl Led {
                 )
             },
 
-            Pin::P2_1 => unsafe {
+            PinName::P2_1 => unsafe {
                 Some (
                     Led {
                         out_addr: &mut *(BITBAND_GREEN_LED_VALUE as *mut u8),
@@ -42,7 +42,7 @@ impl Led {
                     }
                 )
             },
-            Pin::P2_2 => unsafe {
+            PinName::P2_2 => unsafe {
                 Some (
                     Led {
                         out_addr: &mut *(BITBAND_BLUE_LED_VALUE as *mut u8),

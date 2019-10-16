@@ -1,6 +1,6 @@
 
 #[derive(Copy, Clone)]
-pub enum Pin {
+pub enum PinName {
     P2_0 = 0x01,
     P2_1 = 0x02,
     P2_2 = 0x04,
@@ -11,14 +11,14 @@ pub enum Pin {
     P2_7 = 0x80,
 }
 
-pub struct PinToken {
-    pin: Pin
+pub struct Pin {
+    pin: PinName
 }
 
 static mut PORT2_PINS_AVAILABLE: u8 = 0xFF;
 
-impl PinToken {
-    pub fn new(pin: Pin) -> Option<Self> {
+impl Pin {
+    pub fn new(pin: PinName) -> Option<Self> {
         let pin_mask = pin as u8;
         unsafe {
             if PORT2_PINS_AVAILABLE & pin_mask == 0 {
@@ -28,15 +28,15 @@ impl PinToken {
             PORT2_PINS_AVAILABLE &= !pin_mask;
         }
 
-        Some(PinToken {pin: pin})
+        Some(Pin {pin: pin})
     }
 
-    pub fn get_pin(&self) -> Pin {
+    pub fn get_pin(&self) -> PinName {
         self.pin
     }
 }
 
-impl Drop for PinToken {
+impl Drop for Pin {
     fn drop(&mut self) {
         let pin_mask = self.pin as u8;
         unsafe {
