@@ -1,4 +1,6 @@
 
+use core::sync::atomic::{AtomicU8, Ordering};
+
 #[derive(Copy, Clone)]
 pub enum PinName {
     P2_0 = 0x01,
@@ -15,17 +17,17 @@ pub struct Pin {
     pin: PinName
 }
 
-static mut PORT2_PINS_AVAILABLE: u8 = 0xFF;
+static mut PORT2_PINS_AVAILABLE: AtomicU8 = AtomicU8::new(0xFF);
 
 impl Pin {
     pub fn new(pin: PinName) -> Option<Self> {
         let pin_mask = pin as u8;
-        unsafe {
-            if PORT2_PINS_AVAILABLE & pin_mask == 0 {
-                return None;
-            }
+        let value = unsafe {
+            PORT2_PINS_AVAILABLE.fetch_nand(pin_mask, Ordering::Relaxed)
+        };
 
-            PORT2_PINS_AVAILABLE &= !pin_mask;
+        if value & pin_mask == 0 {
+            return None;
         }
 
         Some(Pin {pin: pin})
@@ -40,7 +42,7 @@ impl Drop for Pin {
     fn drop(&mut self) {
         let pin_mask = self.pin as u8;
         unsafe {
-            PORT2_PINS_AVAILABLE |= pin_mask;
+            PORT2_PINS_AVAILABLE.fetch_or(pin_mask, Ordering::Relaxed);
         }
     }
 }

@@ -60,18 +60,34 @@ pub unsafe extern "C" fn reset() -> ! {
         static mut __data_load_start: u8;
     }
 
-    let start_bss = &__bss_start as *const u8 as usize;
+    let mut start_bss = &__bss_start as *const u8 as usize;
     let end_bss = &__bss_end as *const u8 as usize;
     let bss_size = end_bss - start_bss;
 
-    ptr::write_bytes(start_bss as *mut u8, 0, bss_size);
+    //
+    // Explicilty avoid using ptr::write_bytes to avoid using large memclr
+    //
 
-    let load_data = &__data_load_start as *const u8 as usize;
-    let start_data = &__data_start as *const u8 as usize;
+    for _ in 0..bss_size {
+        ptr::write(start_bss as *mut u8, 0);
+        start_bss += 1;
+    }
+
+    let mut load_data = &__data_load_start as *const u8 as usize;
+    let mut start_data = &__data_start as *const u8 as usize;
     let end_data = &__data_end as *const u8 as usize;
     let data_size = end_data - start_data;
 
-    ptr::copy_nonoverlapping(load_data as *const u8, start_data as *mut u8, data_size);
+    //
+    // Explicilty avoid using ptr::copy_nonoverlapping to avoid using large memcpy
+    //
+
+    for _ in 0..data_size {
+        let data = ptr::read(load_data as *const u8);
+        ptr::write(start_data as *mut u8, data);
+        load_data += 1;
+        start_data += 1;
+    }
 
     main();
 }
