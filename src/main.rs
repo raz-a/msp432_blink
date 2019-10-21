@@ -128,4 +128,4 @@ pub static EXCEPTION_VECTORS: [unsafe extern "C" fn() -> !; 14] = [default_handl
 
 #[link_section = ".vector_table.interrupts"]
 #[no_mangle]
-pub static INTERRUPT_VECTORS: [unsafe extern "C" fn() -> !; 0] = [default_handler; 0];
+pub static INTERRUPT_VECTORS: [unsafe extern "C" fn() -> !; 41] = [default_handler; 41];
