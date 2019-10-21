@@ -5,11 +5,13 @@
 
 mod led;
 mod pin;
+mod watchdog;
 
 use core::panic::PanicInfo;
 use core::ptr;
 use led::Led;
 use pin::{Pin, PinName};
+use watchdog::WatchdogTimer;
 
 #[inline(never)]
 fn main() -> ! {
@@ -89,6 +91,21 @@ pub unsafe extern "C" fn reset() -> ! {
         start_data += 1;
     }
 
+    //
+    // Disable Watchdog
+    //
+
+    let wdt = WatchdogTimer::acquire();
+    match wdt {
+        Some(mut timer) => {
+            timer.disable();
+        },
+
+        None => {
+            debug_assert!(false);
+        }
+    }
+
     main();
 }
 
@@ -102,20 +119,6 @@ fn panic(_info: &PanicInfo<'_>) -> ! {
 }
 
 pub unsafe extern "C" fn default_handler() -> ! {
-    let pin = Pin::new(PinName::P2_0);
-    match pin {
-        Some(p) => {
-            let led = Led::new(p);
-            match led {
-                Some(mut l) => {
-                    l.on()
-                },
-                None => {}
-            }
-        },
-
-        None => {}
-    }
     loop{};
 }
 
