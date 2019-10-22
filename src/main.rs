@@ -27,11 +27,15 @@ fn main() -> ! {
                     }
                 },
 
-                None => {}
+                None => {
+                    debug_assert!(false);
+                }
             }
         },
 
-        None => {}
+        None => {
+            debug_assert!(false);
+        }
     }
 
     loop {};
