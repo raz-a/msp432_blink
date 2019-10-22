@@ -51,7 +51,12 @@ pub static RESET_VECTOR: unsafe extern "C" fn() -> ! = reset;
 
 #[no_mangle]
 pub unsafe extern "C" fn reset() -> ! {
+    init_memory_sections();
+    disable_watchdog();
+    main();
+}
 
+unsafe fn init_memory_sections() {
     extern "C" {
         static mut __bss_start: u8;
         static mut __bss_end: u8;
@@ -62,39 +67,21 @@ pub unsafe extern "C" fn reset() -> ! {
         static mut __data_load_start: u8;
     }
 
-    let mut start_bss = &__bss_start as *const u8 as usize;
+    let start_bss = &__bss_start as *const u8 as usize;
     let end_bss = &__bss_end as *const u8 as usize;
     let bss_size = end_bss - start_bss;
 
-    //
-    // Explicilty avoid using ptr::write_bytes to avoid using large memclr
-    //
+    ptr::write_bytes(start_bss as *mut u8, 0, bss_size);
 
-    for _ in 0..bss_size {
-        ptr::write(start_bss as *mut u8, 0);
-        start_bss += 1;
-    }
-
-    let mut load_data = &__data_load_start as *const u8 as usize;
-    let mut start_data = &__data_start as *const u8 as usize;
+    let load_data = &__data_load_start as *const u8 as usize;
+    let start_data = &__data_start as *const u8 as usize;
     let end_data = &__data_end as *const u8 as usize;
     let data_size = end_data - start_data;
 
-    //
-    // Explicilty avoid using ptr::copy_nonoverlapping to avoid using large memcpy
-    //
+    ptr::copy_nonoverlapping(load_data as *mut u8, start_data as *mut u8, data_size);
+}
 
-    for _ in 0..data_size {
-        let data = ptr::read(load_data as *const u8);
-        ptr::write(start_data as *mut u8, data);
-        load_data += 1;
-        start_data += 1;
-    }
-
-    //
-    // Disable Watchdog
-    //
-
+fn disable_watchdog() {
     let wdt = WatchdogTimer::acquire();
     match wdt {
         Some(mut timer) => {
@@ -105,8 +92,6 @@ pub unsafe extern "C" fn reset() -> ! {
             debug_assert!(false);
         }
     }
-
-    main();
 }
 
 #[panic_handler]
