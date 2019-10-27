@@ -3,15 +3,14 @@
 #![no_main]
 #![feature(asm)]
 
-mod led;
-mod pin;
-mod watchdog;
+mod chip;
+mod board;
 
 use core::panic::PanicInfo;
 use core::ptr;
-use led::Led;
-use pin::{Pin, PinName};
-use watchdog::WatchdogTimer;
+use board::led::Led;
+use chip::pin::{Pin, PinName};
+use chip::watchdog::WatchdogTimer;
 
 #[inline(never)]
 fn main() -> ! {
