@@ -6,29 +6,22 @@
 mod chip;
 mod board;
 
+use board::led::*;
+use chip::gpio::*;
+use chip::pin::Pin;
+use chip::watchdog::WatchdogTimer;
 use core::panic::PanicInfo;
 use core::ptr;
-use board::led::Led;
-use chip::pin::{Pin, PinName};
-use chip::watchdog::WatchdogTimer;
 
 #[inline(never)]
 fn main() -> ! {
-    let pin = Pin::new(PinName::P2_2);
+    let pin = Pin::new(RGB_BLUE_LED_PIN);
     match pin {
         Some(p) => {
-            let led = Led::new(p);
-            match led {
-                Some(mut l) => {
-                    loop {
-                        delay(500000);
-                        l.toggle();
-                    }
-                },
-
-                None => {
-                    debug_assert!(false);
-                }
+            let mut led = Led::new(PushPullGpioOut::new(p));
+            loop {
+                delay(500000);
+                led.toggle();
             }
         },
 
