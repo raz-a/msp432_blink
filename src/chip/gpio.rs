@@ -1,6 +1,8 @@
 
 use crate::chip::pin::Pin;
 
+/// TODO: Add support for more thsn just port 2
+
 const P2OUT_BITBAND: usize = 0x4209_8060;
 const P2DIR_BITBAND: usize = 0x4209_80A0;
 
@@ -19,8 +21,8 @@ pub struct PushPullGpioOut {
 
 impl GpioOut for PushPullGpioOut {
     fn new(pin: Pin) -> Self {
-        let out_value = P2OUT_BITBAND + (pin.get_pin() as usize) * core::mem::size_of::<u32>();
-        let dir_value = P2DIR_BITBAND + (pin.get_pin() as usize) * core::mem::size_of::<u32>();
+        let out_value = P2OUT_BITBAND + ((pin.get_pin_offset_in_port() as usize) - 8) * core::mem::size_of::<u32>();
+        let dir_value = P2DIR_BITBAND + ((pin.get_pin_offset_in_port() as usize) - 8) * core::mem::size_of::<u32>();
         let gpio_out = unsafe {
             PushPullGpioOut {
                 out_bitband_addr: &mut *(out_value as *mut u8),
