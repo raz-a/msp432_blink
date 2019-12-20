@@ -3,4 +3,11 @@
 [[package]]
 name = "msp432_blink"
 version = "0.1.0"
+dependencies = [
+ "msp432_razcal",
+]
 
+[[package]]
+name = "msp432_razcal"
+version = "0.1.0"
+source = "git+https://github.com/raz-a/msp432_razcal#75ba5c58b5b3ad8014e95ffb7c98a55400e36a55"

@@ -3,13 +3,13 @@
 #![no_main]
 #![feature(asm)]
 
-mod chip;
+extern crate msp432_razcal;
 mod board;
 
 use board::led::*;
-use chip::gpio::*;
-use chip::pin::Pin;
-use chip::watchdog::WatchdogTimer;
+use msp432_razcal::gpio::*;
+use msp432_razcal::pin::Pin;
+use msp432_razcal::watchdog::WatchdogTimer;
 use core::panic::PanicInfo;
 use core::ptr;
 
