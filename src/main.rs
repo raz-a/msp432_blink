@@ -20,7 +20,7 @@ fn main() -> ! {
         Some(p) => {
             let mut led = Led::new(PushPullGpioOut::new(p));
             loop {
-                //delay(500000);
+                delay(500000);
                 led.toggle();
                 unsafe{asm!("")};
             }
@@ -35,7 +35,7 @@ fn main() -> ! {
 }
 
 fn delay(count: i32) {
-    for _ in 0..count {
+    for _ in (0..count).rev() {
         unsafe {
             asm!("");
         }
