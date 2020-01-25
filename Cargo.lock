@@ -10,4 +10,4 @@ dependencies = [
 [[package]]
 name = "msp432_razcal"
 version = "0.1.0"
-source = "git+https://github.com/raz-a/msp432_razcal#02ea3a4a20ba44a53a8dfa987fbc56ac67980bb8"
+source = "git+https://github.com/raz-a/msp432_razcal#0a59f8faa6bdcced63537d868adee858e042ede1"

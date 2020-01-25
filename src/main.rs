@@ -15,13 +15,14 @@ use core::ptr;
 
 #[inline(never)]
 fn main() -> ! {
-    let pin = Pin::new(RGB_BLUE_LED_PIN);
+    let pin = Pin::new(RGB_GREEN_LED_PIN);
     match pin {
         Some(p) => {
             let mut led = Led::new(PushPullGpioOut::new(p));
             loop {
-                delay(500000);
+                //delay(500000);
                 led.toggle();
+                unsafe{asm!("")};
             }
         },
 
