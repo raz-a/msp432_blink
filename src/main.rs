@@ -6,7 +6,8 @@
 extern crate msp432_razcal;
 mod board;
 
-use board::led::*;
+use board::*;
+use board::rgbled::*;
 use msp432_razcal::gpio::*;
 use msp432_razcal::pin::Pin;
 use msp432_razcal::watchdog::WatchdogTimer;
@@ -15,20 +16,41 @@ use core::ptr;
 
 #[inline(never)]
 fn main() -> ! {
-    let pin = Pin::new(RGB_BLUE_LED_PIN);
-    match pin {
-        Some(p) => {
-            let mut led = Led::new(PushPullGpioOut::new(p));
-            loop {
-                delay(500000);
-                led.toggle();
-                unsafe{asm!("")};
-            }
-        },
 
-        None => {
-            debug_assert!(false);
+    let red = Pin::new(RGB_RED_LED_PIN);
+    let green = Pin::new(RGB_GREEN_LED_PIN);
+    let blue = Pin::new(RGB_BLUE_LED_PIN);
+
+    if let (Some(red), Some(green), Some(blue)) = (red, green, blue) {
+        let mut rgbled = RgbLed::new(PushPullGpioOut::new(red),
+                                     PushPullGpioOut::new(green),
+                                     PushPullGpioOut::new(blue));
+
+        loop {
+            rgbled.set_color(RgbLedColor::Red);
+            delay(1000000);
+
+            rgbled.set_color(RgbLedColor::Green);
+            delay(1000000);
+
+            rgbled.set_color(RgbLedColor::Yellow);
+            delay(1000000);
+
+            rgbled.set_color(RgbLedColor::Blue);
+            delay(1000000);
+
+            rgbled.set_color(RgbLedColor::Magenta);
+            delay(1000000);
+
+            rgbled.set_color(RgbLedColor::Cyan);
+            delay(1000000);
+
+            rgbled.set_color(RgbLedColor::White);
+            delay(1000000);
         }
+
+    } else {
+        debug_assert!(false);
     }
 
     loop {};
