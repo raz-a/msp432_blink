@@ -1,4 +1,3 @@
-
 #![no_std]
 #![no_main]
 #![feature(asm)]
@@ -6,54 +5,69 @@
 extern crate msp432_razcal;
 mod board;
 
-use board::*;
+use board::led::*;
 use board::rgbled::*;
+use board::*;
+use core::panic::PanicInfo;
+use core::ptr;
 use msp432_razcal::gpio::*;
 use msp432_razcal::pin::Pin;
 use msp432_razcal::watchdog::WatchdogTimer;
-use core::panic::PanicInfo;
-use core::ptr;
 
 #[inline(never)]
 fn main() -> ! {
-
-    let red = Pin::new(RGB_RED_LED_PIN);
-    let green = Pin::new(RGB_GREEN_LED_PIN);
+    //let red = Pin::new(RGB_RED_LED_PIN);
+    //let green = Pin::new(RGB_GREEN_LED_PIN);
     let blue = Pin::new(RGB_BLUE_LED_PIN);
 
-    if let (Some(red), Some(green), Some(blue)) = (red, green, blue) {
-        let mut rgbled = RgbLed::new(PushPullGpioOut::new(red),
-                                     PushPullGpioOut::new(green),
-                                     PushPullGpioOut::new(blue));
-
-        loop {
-            rgbled.set_color(RgbLedColor::Red);
-            delay(1000000);
-
-            rgbled.set_color(RgbLedColor::Green);
-            delay(1000000);
-
-            rgbled.set_color(RgbLedColor::Yellow);
-            delay(1000000);
-
-            rgbled.set_color(RgbLedColor::Blue);
-            delay(1000000);
-
-            rgbled.set_color(RgbLedColor::Magenta);
-            delay(1000000);
-
-            rgbled.set_color(RgbLedColor::Cyan);
-            delay(1000000);
-
-            rgbled.set_color(RgbLedColor::White);
-            delay(1000000);
+    match blue {
+        Some(b) => {
+            let mut led = Led::new(gpio_pin_new(b).to_output_pushpull());
+            loop {
+                led.toggle();
+                delay(1000000);
+            }
         }
 
-    } else {
-        debug_assert!(false);
+        None => {
+            debug_assert!(false);
+        }
     }
 
-    loop {};
+    // if let (Some(red), Some(green), Some(blue)) = (red, green, blue) {
+    //     let mut rgbled = RgbLed::new(
+    //         gpio_pin_new(red).to_output_pushpull(),
+    //         gpio_pin_new(green).to_output_pushpull(),
+    //         gpio_pin_new(blue).to_output_pushpull(),
+    //     );
+
+    //     loop {
+    //         rgbled.set_color(RgbLedColor::Red);
+    //         delay(1000000);
+
+    //         rgbled.set_color(RgbLedColor::Green);
+    //         delay(1000000);
+
+    //         rgbled.set_color(RgbLedColor::Yellow);
+    //         delay(1000000);
+
+    //         rgbled.set_color(RgbLedColor::Blue);
+    //         delay(1000000);
+
+    //         rgbled.set_color(RgbLedColor::Magenta);
+    //         delay(1000000);
+
+    //         rgbled.set_color(RgbLedColor::Cyan);
+    //         delay(1000000);
+
+    //         rgbled.set_color(RgbLedColor::White);
+    //         delay(1000000);
+    //     }
+    // } else {
+    //     debug_assert!(false);
+    // }
+
+    loop {}
 }
 
 fn delay(count: i32) {
@@ -105,7 +119,7 @@ fn disable_watchdog() {
     match wdt {
         Some(mut timer) => {
             timer.disable();
-        },
+        }
 
         None => {
             debug_assert!(false);
@@ -123,7 +137,7 @@ fn panic(_info: &PanicInfo<'_>) -> ! {
 }
 
 pub unsafe extern "C" fn default_handler() -> ! {
-    loop{};
+    loop {}
 }
 
 #[link_section = ".vector_table.exceptions"]
