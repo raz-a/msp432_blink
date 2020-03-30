@@ -18,7 +18,7 @@ pub enum RgbLedColor {
     White,
 }
 
-impl<T: GpioPinOutput> RgbLed<T> {
+impl<T: GpioPinOutput + GpioPortSync> RgbLed<T> {
     pub fn new(red: T, green: T, blue: T) -> Self {
         let mut led = RgbLed {
             red: Led::new(red),

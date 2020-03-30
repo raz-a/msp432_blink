@@ -4,7 +4,7 @@ pub struct Led<T: GpioPinOutput> {
     gpio_out: T,
 }
 
-impl<T: GpioPinOutput> Led<T> {
+impl<T: GpioPinOutput + GpioPortSync> Led<T> {
     pub fn new(gpio_out: T) -> Self {
         let mut led = Led { gpio_out: gpio_out };
         led.off();
@@ -12,14 +12,14 @@ impl<T: GpioPinOutput> Led<T> {
     }
 
     pub fn on(&mut self) {
-        self.gpio_out.set();
+        unsafe { self.gpio_out.set_no_sync() };
     }
 
     pub fn off(&mut self) {
-        self.gpio_out.clear();
+        unsafe { self.gpio_out.clear_no_sync() };
     }
 
     pub fn toggle(&mut self) {
-        self.gpio_out.toggle();
+        unsafe { self.gpio_out.toggle_no_sync() };
     }
 }

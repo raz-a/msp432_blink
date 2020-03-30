@@ -10,7 +10,7 @@ dependencies = [
 [[package]]
 name = "msp432_razcal"
 version = "0.1.0"
-source = "git+https://github.com/raz-a/msp432_razcal#ccd7fd8e85dffb637138de08f73d5262242ade08"
+source = "git+https://github.com/raz-a/msp432_razcal#0d5f7e4217c1d97edf092b709c25809f89c7a901"
 dependencies = [
  "serde",
  "toml",
