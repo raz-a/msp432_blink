@@ -15,21 +15,16 @@ use msp432_razcal::watchdog::WatchdogTimer;
 
 #[inline(never)]
 fn main() -> ! {
-    let blue = Pin::new(RGB_BLUE_LED_PIN);
-    match blue {
-        Some(b) => {
-            let mut led = Led::new(unsafe { gpio_pin_new(b).to_output_pushpull_no_sync() });
-            loop {
-                led.toggle();
-                delay(1000000);
-            }
-        }
-
-        None => {
-            debug_assert!(false);
+    let green = Pin::new(RGB_GREEN_LED_PIN);
+    if let Some(g) = green {
+        let mut led = Led::new(unsafe { gpio_pin_new(g).to_output_pushpull_no_sync() });
+        loop {
+            led.toggle();
+            delay(1000000);
         }
     }
 
+    debug_assert!(false);
     loop {}
 }
 

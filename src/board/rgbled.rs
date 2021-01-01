@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use super::led::Led;
 use msp432_razcal::gpio::*;
 
