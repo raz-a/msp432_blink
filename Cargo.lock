@@ -10,7 +10,7 @@ dependencies = [
 [[package]]
 name = "msp432_razcal"
 version = "0.1.0"
-source = "git+https://github.com/raz-a/msp432_razcal#5c97e059ab344ebe5b45ff56456b672a76c87781"
+source = "git+https://github.com/raz-a/msp432_razcal#0a3d0e3f86bbbe12a61c22ec05f7998a215a2a4f"
 dependencies = [
  "serde",
  "toml",
@@ -56,9 +56,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.56"
+version = "1.0.57"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a9802ddde94170d186eeee5005b798d9c159fa970403f1be19976d0cfb939b72"
+checksum = "4211ce9909eb971f111059df92c45640aad50a619cf55cd76476be803c4c68e6"
 dependencies = [
  "proc-macro2",
  "quote",
