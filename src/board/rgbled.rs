@@ -3,10 +3,10 @@
 use super::led::Led;
 use msp432_razcal::gpio::*;
 
-pub struct RgbLed<T: GpioPinOutput> {
-    red: Led<T>,
-    green: Led<T>,
-    blue: Led<T>,
+pub struct RgbLed<Pin: GpioPinOutput> {
+    red: Led<Pin>,
+    green: Led<Pin>,
+    blue: Led<Pin>,
 }
 
 pub enum RgbLedColor {
@@ -20,8 +20,8 @@ pub enum RgbLedColor {
     White,
 }
 
-impl<T: GpioPinOutput + GpioPortSync> RgbLed<T> {
-    pub fn new(red: T, green: T, blue: T) -> Self {
+impl<Pin: GpioPinOutput> RgbLed<Pin> {
+    pub fn new(red: Pin, green: Pin, blue: Pin) -> Self {
         let mut led = RgbLed {
             red: Led::new(red),
             green: Led::new(green),

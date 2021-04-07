@@ -2,22 +2,19 @@
 #![no_main]
 #![feature(asm)]
 
+use core::{panic::PanicInfo, ptr};
+
+use board::led::Led;
+use msp432_razcal::{gpio::gpio_pin_new, pin::McuPinSet, watchdog::WatchdogTimer};
+
 extern crate msp432_razcal;
 mod board;
 
-use board::led::*;
-use board::*;
-use core::panic::PanicInfo;
-use core::ptr;
-use msp432_razcal::gpio::*;
-use msp432_razcal::pin::Pin;
-use msp432_razcal::watchdog::WatchdogTimer;
-
 #[inline(never)]
 fn main() -> ! {
-    let blue = Pin::new(RGB_BLUE_LED_PIN);
-    if let Some(b) = blue {
-        let mut led = Led::new(unsafe { gpio_pin_new(b).to_output_pushpull_no_sync() });
+    let mcu_pins = McuPinSet::get_mcu_pins();
+    if let Some(pins) = mcu_pins {
+        let mut led = Led::new(gpio_pin_new(pins.pa10).to_output_pushpull());
         loop {
             led.toggle();
             delay(1000000);
