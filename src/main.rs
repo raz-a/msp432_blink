@@ -5,7 +5,7 @@
 use core::{panic::PanicInfo, ptr};
 
 use board::led::Led;
-use msp432_razcal::{gpio::gpio_pin_new, pin::McuPinSet, watchdog::WatchdogTimer};
+use msp432_razcal::{gpio::GpioPin, pin::McuPinSet, watchdog::WatchdogTimer};
 
 extern crate msp432_razcal;
 mod board;
@@ -14,7 +14,7 @@ mod board;
 fn main() -> ! {
     let mcu_pins = McuPinSet::get_mcu_pins();
     if let Some(pins) = mcu_pins {
-        let mut led = Led::new(gpio_pin_new(pins.pa10).to_output_pushpull());
+        let mut led = Led::new(GpioPin::new(pins.pa10).to_output_pushpull());
         loop {
             led.toggle();
             delay(1000000);
