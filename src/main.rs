@@ -26,7 +26,7 @@ fn main() -> ! {
 }
 
 fn delay(count: i32) {
-    for _ in (0..count).rev() {
+    for _ in 0..count {
         unsafe {
             asm!("");
         }
