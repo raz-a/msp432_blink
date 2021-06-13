@@ -15,6 +15,18 @@
                 "./openocd.cfg"
             ],
             "svdFile": "./MSP432P401R.svd"
+        },
+        {
+            "name": "Cortex Debug",
+            "cwd": "${workspaceRoot}",
+            "executable": "./target/thumbv7em-none-eabihf/debug/msp432_blink",
+            "request": "launch",
+            "type": "cortex-debug",
+            "servertype": "openocd",
+            "configFiles": [
+                "./openocd.cfg"
+            ],
+            "svdFile": "./MSP432P401R.svd"
         }
     ]
 }
