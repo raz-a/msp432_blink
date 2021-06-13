@@ -21,14 +21,14 @@ fn main() -> ! {
     let mut color = RgbLedColor::Red;
     let mcu_pins = McuPinSet::get_mcu_pins();
     if let Some(pins) = mcu_pins {
-        //let mut led = Led::new(GpioPin::new(pins.pa0).to_output_pushpull());
+        let mut led = Led::new(GpioPin::new(pins.pa0).to_output_pushpull());
         let mut rgbled = RgbLedContiguous::new(
             GpioSectionBus::new(PortSection3::<'A', 8>::new(pins.pa8, pins.pa9, pins.pa10))
                 .to_output_pushpull(),
         );
 
         loop {
-            //led.toggle();
+            led.toggle();
             rgbled.set_color(color);
             color = color.cycle();
             delay(1000000);
