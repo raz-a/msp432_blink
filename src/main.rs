@@ -7,6 +7,7 @@ use core::{panic::PanicInfo, ptr};
 use board::led::Led;
 use msp432_razcal::{
     gpio::{GpioPin, GpioSectionBus},
+    interrupt::single_proc_critical_section,
     pin::{McuPinSet, PortSection3},
     watchdog::WatchdogTimer,
 };
@@ -28,9 +29,12 @@ fn main() -> ! {
         );
 
         loop {
-            led.toggle();
-            rgbled.set_color(color);
-            color = color.cycle();
+            single_proc_critical_section(|_| {
+                led.toggle();
+                rgbled.set_color(color);
+                color = color.cycle();
+            });
+
             delay(1000000);
         }
     }
