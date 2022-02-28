@@ -1,7 +1,7 @@
 #![no_std]
 #![no_main]
-#![feature(asm)]
 
+use core::arch::asm;
 use core::{panic::PanicInfo, ptr};
 
 use board::led::Led;
@@ -12,7 +12,7 @@ use msp432_razcal::{
     watchdog::WatchdogTimer,
 };
 
-use crate::board::rgbled::{RgbLed, RgbLedColor, RgbLedContiguous};
+use crate::board::rgbled::{RgbLed, RgbLedColor};
 
 extern crate msp432_razcal;
 mod board;
@@ -23,7 +23,7 @@ fn main() -> ! {
     let mcu_pins = McuPinSet::get_mcu_pins();
     if let Some(pins) = mcu_pins {
         let mut led = Led::new(GpioPin::new(pins.pa0).to_output_pushpull());
-        let mut rgbled = RgbLedContiguous::new(
+        let mut rgbled = RgbLed::new(
             GpioSectionBus::new(PortSection3::<'A', 8>::new(pins.pa8, pins.pa9, pins.pa10))
                 .to_output_pushpull(),
         );

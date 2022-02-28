@@ -3,10 +3,6 @@
 use super::led::Led;
 use msp432_razcal::gpio::*;
 
-pub trait RgbLed {
-    fn set_color(&mut self, color: RgbLedColor);
-}
-
 #[derive(Clone, Copy)]
 pub enum RgbLedColor {
     Off,
@@ -48,104 +44,21 @@ impl RgbLedColor {
 }
 
 //
-// Sparse pins.
-//
-
-pub struct RgbLedSparse<RedPin: GpioPinOutput, GreenPin: GpioPinOutput, BluePin: GpioPinOutput> {
-    red: Led<RedPin>,
-    green: Led<GreenPin>,
-    blue: Led<BluePin>,
-}
-
-impl<RedPin: GpioPinOutput, GreenPin: GpioPinOutput, BluePin: GpioPinOutput>
-    RgbLedSparse<RedPin, GreenPin, BluePin>
-{
-    pub fn new(red: RedPin, green: GreenPin, blue: BluePin) -> Self {
-        let mut led = Self {
-            red: Led::new(red),
-            green: Led::new(green),
-            blue: Led::new(blue),
-        };
-
-        led.set_color(RgbLedColor::Off);
-        led
-    }
-}
-
-impl<RedPin: GpioPinOutput, GreenPin: GpioPinOutput, BluePin: GpioPinOutput> RgbLed
-    for RgbLedSparse<RedPin, GreenPin, BluePin>
-{
-    fn set_color(&mut self, color: RgbLedColor) {
-        match color {
-            RgbLedColor::Off => {
-                self.red.off();
-                self.green.off();
-                self.blue.off();
-            }
-
-            RgbLedColor::Red => {
-                self.red.on();
-                self.green.off();
-                self.blue.off();
-            }
-
-            RgbLedColor::Green => {
-                self.red.off();
-                self.green.on();
-                self.blue.off();
-            }
-
-            RgbLedColor::Yellow => {
-                self.red.on();
-                self.green.on();
-                self.blue.off();
-            }
-
-            RgbLedColor::Blue => {
-                self.red.off();
-                self.green.off();
-                self.blue.on();
-            }
-
-            RgbLedColor::Magenta => {
-                self.red.on();
-                self.green.off();
-                self.blue.on();
-            }
-
-            RgbLedColor::Cyan => {
-                self.red.off();
-                self.green.on();
-                self.blue.on();
-            }
-
-            RgbLedColor::White => {
-                self.red.on();
-                self.green.on();
-                self.blue.on();
-            }
-        }
-    }
-}
-
-//
 // Contiguous Pins.
 //
 
-pub struct RgbLedContiguous<Bus: GpioBusOutput<3>> {
+pub struct RgbLed<Bus: GpioBusOutput<3>> {
     pins: Bus,
 }
 
-impl<Bus: GpioBusOutput<3>> RgbLedContiguous<Bus> {
+impl<Bus: GpioBusOutput<3>> RgbLed<Bus> {
     pub fn new(pins: Bus) -> Self {
         let mut led = Self { pins: pins };
         led.set_color(RgbLedColor::Off);
         led
     }
-}
 
-impl<Bus: GpioBusOutput<3>> RgbLed for RgbLedContiguous<Bus> {
-    fn set_color(&mut self, color: RgbLedColor) {
+    pub fn set_color(&mut self, color: RgbLedColor) {
         self.pins.write(color.to_bits());
     }
 }
